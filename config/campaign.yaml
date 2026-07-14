@@ -1,0 +1,104 @@
+candidate_slug: eu-ai-act-compliance-assessment
+brand:
+  name: AI Act Ready
+  eyebrow: Fixed-fee EU AI Act readiness
+  colophon: A Novique.ai company
+  description: Technical documentation support for SaaS teams preparing for the EU AI Act.
+
+value_proposition:
+  headline: Know your AI Act risk before the deadline reaches you.
+  body: A fixed-fee, no-sales-call, self-service path from initial risk classification to Annex IV documentation and audit preparation.
+  proof_line: Built for 10-50 employee SaaS teams selling into Europe.
+
+offer_tiers:
+  - id: quick
+    name: Quick risk classification
+    price_minor: 50000
+    currency: EUR
+    cadence: one_time
+    stripe_mode: payment
+    stripe_price_env: STRIPE_PRICE_QUICK
+    purchasable: true
+    primary: true
+    description: A focused technical classification of your AI system and a documented next-step map.
+    features:
+      - Structured system intake
+      - Technical risk-classification support
+      - Written next-step map
+  - id: full
+    name: Full assessment
+    price_minor: 250000
+    currency: EUR
+    cadence: one_time
+    stripe_mode: payment
+    stripe_price_env: STRIPE_PRICE_FULL
+    purchasable: true
+    primary: false
+    description: A deeper technical assessment with Annex IV documentation support and audit preparation.
+    features:
+      - Everything in quick classification
+      - Annex IV documentation support
+      - Audit-preparation package
+  - id: monitoring
+    name: Ongoing monitoring
+    price_minor: 50000
+    currency: EUR
+    cadence: monthly
+    stripe_mode: none
+    stripe_price_env: null
+    purchasable: false
+    primary: false
+    qualifier: After your assessment
+    description: Ongoing monitoring is listed for demand validation; its deliverables must be defined before checkout is enabled.
+    features:
+      - Offered only after an assessment
+      - No checkout in validation v1
+
+urgency:
+  label: August 2026 enforcement deadline
+  headline: The deadline is close enough to plan for now.
+  body: Start with a bounded technical classification instead of an open-ended consulting engagement.
+
+evidence_bullets:
+  - text: Founders report customers already sending detailed AI Act compliance questionnaires.
+    source_url: https://www.reddit.com/r/Entrepreneurs/comments/1rmgtnn/got_our_first_eu_customer_asking_about_ai_act/
+  - text: A cited 2026 survey reports 73% of European SMEs cannot determine whether their AI systems are high-risk.
+    source_url: https://www.linkedin.com/pulse/title-eu-ai-act-compliance-smes-2026-risk-framework-dr-hernani-costa-gxoae
+  - text: Published startup estimates place first-year AI Act compliance costs well above this fixed-fee entry point.
+    source_url: https://wavect.io/blog/eu-ai-act-compliance-cost-startup/
+
+cta_mode: test_checkout
+booking_url: null
+
+lead_magnet:
+  headline: Not ready? Get the free EU AI Act risk checklist.
+  button: Send me the checklist at launch
+  delivery_note: The checklist is not published yet. Join the list and we will email it when it launches.
+
+utm_scheme:
+  source: "{platform}"
+  medium: paid
+  campaign: eu-ai-act-validation-202607
+  content: "{ad-variant}"
+
+thresholds:
+  spend_usd: 50
+  platform: linkedin
+  assumed_cpc_usd: 11.02
+  expected_clicks: 4.54
+  pass:
+    intent_rate_pct_min: 20
+    quick_checkout_started_min: 1
+  kill:
+    intent_rate_pct_below: 6.1
+    quick_checkout_started_max: 0
+  grey: Operator review for every result that is neither PASS nor KILL; the sample is intentionally small.
+  benchmark_sources:
+    - label: Search Engine Land B2B SaaS LinkedIn CPC benchmark
+      url: https://searchengineland.com/linkedin-ads-cpc-benchmarks-how-costs-compare-with-google-ads-481010
+    - label: Unbounce professional-services landing-page median conversion benchmark
+      url: https://unbounce.com/conversion-benchmark-report/professional-services-conversion-rate/
+
+disclaimer:
+  short: Technical documentation support, not legal advice. No regulatory opinions.
+  full: AI Act Ready provides technical documentation support, not legal advice, and does not provide regulatory opinions. Classification results are not a legal determination. Consult qualified counsel for legal interpretation; high-risk systems may require specialist support beyond this assessment.
