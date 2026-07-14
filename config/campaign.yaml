@@ -83,21 +83,36 @@ utm_scheme:
 
 thresholds:
   spend_usd: 50
-  platform: linkedin
-  assumed_cpc_usd: 11.02
-  expected_clicks: 4.54
+  evaluation_window_days: 7
+  platform: reddit
+  targeting: Subreddit communities adjacent to r/SaaS, r/startups, r/Entrepreneur, and r/smallbusiness.
+  assumed_cpc_usd: 1.875
+  assumed_cpc_basis: Midpoint of the cited $0.75-$3.00 B2B SaaS Reddit Ads range.
+  expected_clicks: 26.67
+  minimum_landing_sessions: 20
   pass:
-    intent_rate_pct_min: 20
+    intent_rate_pct_min: 3.8
     quick_checkout_started_min: 1
+    checkout_tier: quick
   kill:
-    intent_rate_pct_below: 6.1
+    intent_rate_pct_below: 2.9
     quick_checkout_started_max: 0
-  grey: Operator review for every result that is neither PASS nor KILL; the sample is intentionally small.
+  grey: Fewer than 20 landing sessions, or any evaluable result that is neither PASS nor KILL, requires operator review.
+  alternative_scenarios:
+    linkedin:
+      assumed_cpc_usd: 11.02
+      expected_clicks: 4.54
+      power_note: Under-powered at $50 because expected clicks are below the 20-session evaluation floor.
   benchmark_sources:
-    - label: Search Engine Land B2B SaaS LinkedIn CPC benchmark
+    - label: Skip the Noise Media B2B SaaS Reddit Ads CPC benchmark ($0.75-$3.00)
+      url: https://skipthenoisemedia.com/reddit-ads-b2b-saas
+      accessed_on: 2026-07-14
+    - label: Unbounce SaaS landing-page median conversion benchmark (3.8%) and paid-social median (2.9%)
+      url: https://unbounce.com/conversion-benchmark-report/saas-conversion-rate/
+      accessed_on: 2026-07-14
+    - label: Search Engine Land B2B SaaS LinkedIn CPC alternative benchmark ($11.02)
       url: https://searchengineland.com/linkedin-ads-cpc-benchmarks-how-costs-compare-with-google-ads-481010
-    - label: Unbounce professional-services landing-page median conversion benchmark
-      url: https://unbounce.com/conversion-benchmark-report/professional-services-conversion-rate/
+      accessed_on: 2026-07-14
 
 disclaimer:
   short: Technical documentation support, not legal advice. No regulatory opinions.
