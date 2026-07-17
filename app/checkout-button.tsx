@@ -1,60 +1,144 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CheckoutTierId } from "@/lib/campaign";
 import { getAttribution, track } from "@/lib/track";
+
+type Phase = "idle" | "loading" | "capture" | "saving" | "done" | "error";
 
 export default function CheckoutButton({
   tier,
   label,
+  tierName,
   primary = false,
 }: {
   tier: CheckoutTierId;
   label: string;
+  tierName?: string;
   primary?: boolean;
 }) {
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
+  const modalOpen = phase === "capture" || phase === "saving" || phase === "error";
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setPhase("idle");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modalOpen]);
+
   async function startCheckout() {
-    if (status === "loading") return;
-    setStatus("loading");
+    if (phase === "loading") return;
+    setPhase("loading");
     setMessage("");
     void track("cta_click", tier);
     try {
-      const response = await fetch("/api/checkout", {
+      // Record the checkout_started intent signal (this is what PASS/KILL counts).
+      // We deliberately do NOT navigate to the returned Stripe URL: real buyers are
+      // routed to an early-access capture instead of a test-mode checkout they cannot
+      // complete. The unused test session simply expires.
+      await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...getAttribution(), tier }),
       });
-      const body = (await response.json()) as { url?: string; error?: string };
-      if (!response.ok || !body.url) {
-        setStatus("error");
+    } catch {
+      // Non-fatal — open the capture regardless so the lead is never lost.
+    }
+    setPhase("capture");
+  }
+
+  async function reserve(event: React.FormEvent) {
+    event.preventDefault();
+    setPhase("saving");
+    setMessage("");
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...getAttribution(), email, tier }),
+      });
+      const body = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        setPhase("error");
         setMessage(
-          body.error === "analytics_not_configured"
-            ? "Test checkout is not connected yet. Join the checklist list below."
-            : "Test checkout is temporarily unavailable.",
+          body.error === "invalid_email"
+            ? "Enter a valid work email."
+            : body.error === "storage_not_configured"
+              ? "The list is not connected yet. Please use the contact form."
+              : "We couldn't reserve your spot. Please try again.",
         );
         return;
       }
-      window.location.assign(body.url);
+      setPhase("done");
     } catch {
-      setStatus("error");
+      setPhase("error");
       setMessage("Network error. Please try again.");
     }
   }
 
   return (
-    <div>
+    <div className="checkout-cta">
       <button
         type="button"
         onClick={startCheckout}
-        disabled={status === "loading"}
+        disabled={phase === "loading"}
         className={primary ? "button button-primary" : "button button-secondary"}
       >
-        {status === "loading" ? "Opening test checkout…" : label}
+        {phase === "loading" ? "One moment…" : label}
       </button>
-      {status === "error" ? <p className="form-error" role="alert">{message}</p> : null}
+
+      {phase === "done" ? (
+        <p className="form-success reserve-success">
+          You&apos;re on the list. We&apos;ll email your secure checkout link and intake steps when your cohort opens.
+        </p>
+      ) : null}
+
+      {modalOpen ? (
+        <div
+          className="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`reserve-title-${tier}`}
+          onClick={() => setPhase("idle")}
+        >
+          <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="modal-close" aria-label="Close" onClick={() => setPhase("idle")}>
+              ×
+            </button>
+            <p className="eyebrow">First cohort{tierName ? ` — ${tierName}` : ""}</p>
+            <h3 id={`reserve-title-${tier}`}>Reserve your spot</h3>
+            <p className="modal-body">
+              We&apos;re onboarding the first group of SaaS teams now. Leave your work email and we&apos;ll send your
+              secure checkout link and intake steps as soon as your slot opens.
+            </p>
+            <form onSubmit={reserve} className="reserve-form">
+              <label htmlFor={`reserve-email-${tier}`} className="sr-only">Work email</label>
+              <input
+                id={`reserve-email-${tier}`}
+                type="email"
+                required
+                maxLength={254}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@company.com"
+                autoComplete="email"
+                autoFocus
+              />
+              <button type="submit" disabled={phase === "saving"} className="button button-primary">
+                {phase === "saving" ? "Reserving…" : "Reserve my spot"}
+              </button>
+              {phase === "error" ? <p className="form-error" role="alert">{message}</p> : null}
+              <p className="modal-note">No charge today. Technical documentation support, not legal advice.</p>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

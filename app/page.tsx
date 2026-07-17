@@ -54,7 +54,7 @@ export default function Home() {
           </div>
           <div className="hero-action">
             {campaign.cta_mode === "test_checkout" ? (
-              <CheckoutButton tier={primaryTier.id} label="Get classified →" primary />
+              <CheckoutButton tier={primaryTier.id} tierName={primaryTier.name} label="Get classified →" primary />
             ) : (
               <a href="#checklist" className="button button-primary">Join the checklist list</a>
             )}
@@ -116,7 +116,7 @@ export default function Home() {
                 </ul>
               </div>
               {tier.id === "full" && campaign.cta_mode === "test_checkout" ? (
-                <CheckoutButton tier="full" label={`Test ${tier.name.toLowerCase()} checkout`} />
+                <CheckoutButton tier="full" tierName={tier.name} label={`Reserve ${tier.name.toLowerCase()}`} />
               ) : tier.primary ? (
                 <p className="primary-offer-label">Primary validation offer</p>
               ) : (
