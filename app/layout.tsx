@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import { getCampaign } from "@/lib/campaign";
 import "./globals.css";
 
-const display = Manrope({ subsets: ["latin"], variable: "--font-display" });
+const display = Fraunces({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+});
 const body = Inter({ subsets: ["latin"], variable: "--font-body" });
 
 export function generateMetadata(): Metadata {
