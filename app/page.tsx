@@ -35,7 +35,7 @@ export default function Home() {
       <header className="site-header shell">
         <Link href="/" className="brand-mark"><span className="brand-dot" aria-hidden />{campaign.brand.name}</Link>
         <div className="header-badges">
-          <span className="test-badge">Test-mode validation</span>
+          <span className="test-badge"><span className="cohort-dot" aria-hidden />Now onboarding · First cohort</span>
           <span className="enforce-badge"><span className="pulse-dot" aria-hidden />Enforcement Aug 2026</span>
         </div>
       </header>
@@ -82,7 +82,7 @@ export default function Home() {
 
       <section className="evidence-band">
         <div className="shell">
-          <p className="eyebrow">Why test this offer now</p>
+          <p className="eyebrow">Why this matters now</p>
           <ul className="evidence-grid">
             {campaign.evidence_bullets.map((bullet) => (
               <li key={bullet.source_url}>
