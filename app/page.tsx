@@ -36,7 +36,7 @@ export default function Home() {
         <Link href="/" className="brand-mark"><span className="brand-dot" aria-hidden />{campaign.brand.name}</Link>
         <div className="header-badges">
           <span className="test-badge"><span className="cohort-dot" aria-hidden />Now onboarding · First cohort</span>
-          <span className="enforce-badge"><span className="pulse-dot" aria-hidden />Enforcement Aug 2026</span>
+          <span className="enforce-badge"><span className="pulse-dot" aria-hidden />Rules phase in 2026–2028</span>
         </div>
       </header>
 
@@ -98,7 +98,7 @@ export default function Home() {
         <div className="section-heading">
           <p className="eyebrow">Transparent fixed fees</p>
           <h2>Choose the depth you need.</h2>
-          <p>No sales call is required for this test-mode funnel.</p>
+          <p>No sales call required — fixed fees, self-service intake.</p>
         </div>
         <div className="tier-grid">
           {campaign.offer_tiers.map((tier) => (

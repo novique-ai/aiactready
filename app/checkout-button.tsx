@@ -32,24 +32,14 @@ export default function CheckoutButton({
     return () => window.removeEventListener("keydown", onKey);
   }, [modalOpen]);
 
-  async function startCheckout() {
+  function startCheckout() {
     if (phase === "loading") return;
-    setPhase("loading");
     setMessage("");
+    // A click is only a click: record cta_click and open the capture. The
+    // checkout_started intent signal (what PASS/KILL counts) fires in reserve()
+    // after a work email is actually submitted — a click-level event here would
+    // overstate intent against the form-fill benchmarks the gate is calibrated to.
     void track("cta_click", tier);
-    try {
-      // Record the checkout_started intent signal (this is what PASS/KILL counts).
-      // We deliberately do NOT navigate to the returned Stripe URL: real buyers are
-      // routed to an early-access capture instead of a test-mode checkout they cannot
-      // complete. The unused test session simply expires.
-      await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...getAttribution(), tier }),
-      });
-    } catch {
-      // Non-fatal — open the capture regardless so the lead is never lost.
-    }
     setPhase("capture");
   }
 
@@ -75,6 +65,15 @@ export default function CheckoutButton({
         );
         return;
       }
+      // Email is in: this is the real purchase-intent moment. Record
+      // checkout_started server-side (fire-and-forget; the reservation above is
+      // already saved, so a failure here loses a metric, never a lead). We still
+      // do not navigate to the returned test-mode Stripe URL; it simply expires.
+      void fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...getAttribution(), tier }),
+      }).catch(() => {});
       setPhase("done");
     } catch {
       setPhase("error");

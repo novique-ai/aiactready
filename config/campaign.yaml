@@ -6,8 +6,8 @@ brand:
   description: Technical documentation support for SaaS teams preparing for the EU AI Act.
 
 value_proposition:
-  headline: Know your AI Act risk class before the deadline hits.
-  body: Fixed-fee classification — not an open-ended consulting engagement. A self-service path from risk classification to Annex IV documentation and audit preparation.
+  headline: Know your AI Act risk class before your customers ask.
+  body: Fixed-fee classification — not an open-ended consulting engagement. A self-service path from risk classification to Annex IV documentation and audit preparation, mapped to the obligations that actually apply to your system and when.
   proof_line: Built for 10-50 employee SaaS teams selling into Europe.
 
 offer_tiers:
@@ -55,8 +55,11 @@ offer_tiers:
       - No checkout in validation v1
 
 urgency:
-  label: August 2026 enforcement deadline
-  headline: The deadline is close enough to plan for now.
+  # Corrected 2026-07-18 (infra-fpug): high-risk Annex III rules apply 2 Dec 2027,
+  # Annex I embedded 2 Aug 2028; Aug 2026 = Article 50 transparency + enforcement
+  # start. Never imply a generic 2026 high-risk/Annex IV deadline.
+  label: AI Act obligations phase in from 2026 to 2028
+  headline: Different rules land on different dates — classification tells you which apply to you, and when.
   body: Start with a bounded technical classification instead of an open-ended consulting engagement.
 
 evidence_bullets:
@@ -82,6 +85,11 @@ utm_scheme:
   content: "{ad-variant}"
 
 thresholds:
+  # Gate semantics v2 (2026-07-18): checkout_started now fires on work-email
+  # submission from a tier's reserve modal, NOT on the CTA click (cta_click is
+  # recorded separately and does not count as intent). This restores calibration
+  # with the Unbounce form-fill benchmarks below, which the click-level event
+  # had silently broken.
   spend_usd: 50
   evaluation_window_days: 7
   platform: reddit
